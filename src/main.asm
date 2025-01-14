@@ -1,4 +1,6 @@
 section .data
+    %define float64(x) __?float64?__(x)
+
     %define ESCAPE           27
     %define FG_BLACK         "[30m"
     %define FG_RED           "[31m"
@@ -14,8 +16,11 @@ section .data
 
     %define CHAR_LENGTH      3
     %define COLOR_WIDTH      5
-    %define WIDTH           60 
+    %define WIDTH           60
     %define HEIGHT          25
+    %define WIDTH_F         60.0
+    %define HEIGHT_F        25.0
+    %define ASPECT_RATIO    2.4
 
     ; Spheres owowowowowowowowowowowowowo
     SPHERES:
@@ -52,7 +57,11 @@ section .data
 
     x       dq             0.0
     y       dq             0.0
-    neg_one dq            -1.0
+
+    %define TWO         2.0
+    %define ONE         1.0
+    %define HALF        0.5
+    %define NEG_ONE    -1.0
 
 section .bss
     buffer resb COLOR_WIDTH 
@@ -97,9 +106,19 @@ loop:
         jmp  loop
     
 done:
-    call get_direction_z
-    .bp:
+    ; call get_direction_x
+    ; movsd xmm4, xmm0            ; Store X in xmm4
+    ; call get_direction_y
+    ; movsd xmm5, xmm0            ; Store Y in xmm5
+    ; call get_direction_z
+    ; movsd xmm2, xmm0            ; Store Z in xmm2
+    ; movsd xmm1, xmm5            ; Move Y to xmm1
+    ; movsd xmm0, xmm4            ; Move X to xmm0
+    ; call  normalize
+    mov rcx, 0
+    call make_x
 
+.bp:
     mov  rax, 60
     xor  rdi, rdi
     syscall

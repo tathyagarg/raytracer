@@ -55,9 +55,10 @@ get_direction_y:
     ret
 
 get_direction_z:
-    movsd xmm0, [x]
+    mov rax, float64(NEG_ONE)
+    movq xmm0, rax
+    mulsd xmm0, [x]
     mulsd xmm0, [rel SIN_CAM_DIR_Y]
-    mulsd xmm0, [rel neg_one]
 
     movsd xmm1, [y]
     mulsd xmm1, [rel SIN_CAM_DIR_X]
@@ -87,3 +88,27 @@ normalize:
     divsd xmm0, xmm4
   
     ret
+
+; x = ((2 * rcx + 0.5) / (w - 1)) * w/h
+make_x:
+    cvtsi2ss xmm0, rcx
+    mov rax, float64(TWO)
+    movq xmm1, rax
+    mulsd xmm0, xmm1
+    mov rax, float64(HALF)
+    movq xmm1, rax
+    addsd xmm0, xmm1
+
+    mov rax, float64(WIDTH_F)
+    movq xmm1, rax
+    mov rax, float64(ONE)
+    movq xmm2, rax
+    subsd xmm1, xmm2
+    divsd xmm0, xmm1
+
+    mov rax, float64(ASPECT_RATIO)
+    movq xmm1, rax
+    mulsd xmm0, xmm1
+    movq qword [x], xmm0
+    ret
+
