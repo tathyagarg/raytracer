@@ -25,16 +25,34 @@ section .data
         db 30, 30, 30, 5
         db 40, 40, 40, 5
         db 50, 50, 50, 5
+
+    %define SPHERE_WIDTH      1 * 4  ; 1 byte per value, 4 values per sphere
+    SPHERE_COUNT equ ($ - SPHERES) / (SPHERE_WIDTH)
+
     SPHERE_COLORS:
         dd FG_RED, FG_GREEN, FG_BLUE, FG_YELLOW, FG_MAGENTA
     %define SPH_X             0
     %define SPH_Y             4
     %define SPH_Z             8
     %define SPH_R             12
-    %define SPHERE_WIDTH      1 * 4
-    %define SPHERE_NO         1
+    %define SPHERE_NO         0
 
     %define BACKGROUND        FG_BLACK
+
+    %define CAM_DIR_X      0
+    %define CAM_DIR_Y      0
+    %define CAM_DIR_Z      0
+
+    SIN_CAM_DIR_X  dq 0.0
+    SIN_CAM_DIR_Y  dq 0.0
+    SIN_CAM_DIR_Z  dq 0.0
+    COS_CAM_DIR_X  dq 1.0
+    COS_CAM_DIR_Y  dq 1.0
+    COS_CAM_DIR_Z  dq 1.0
+
+    x       dq             0.0
+    y       dq             0.0
+    neg_one dq            -1.0
 
 section .bss
     buffer resb COLOR_WIDTH 
@@ -43,6 +61,7 @@ section .text
 global _start
 
 %include "src/terminal.asm"
+%include "src/raytrace.asm"
 
 _start:
     mov  rsi, buffer
@@ -78,7 +97,10 @@ loop:
         jmp  loop
     
 done:
+    call get_direction_z
+    .bp:
+
     mov  rax, 60
     xor  rdi, rdi
-
     syscall
+

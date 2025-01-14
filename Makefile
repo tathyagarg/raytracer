@@ -14,10 +14,10 @@ prod:
 
 debug:
 	nasm -f elf64 $(SOURCE)/main.asm -o $(BINARY)/main.o
-	ld $(BINARY)/main.o -o $(BINARY)/main
+	ld $(BINARY)/main.o -o $(BINARY)/main 
 	rm $(BINARY)/main.o
 
-run: $(BINARY)/main
+run: debug 
 	$(BINARY)/main
 
 .PHONY: qr
