@@ -112,3 +112,39 @@ make_x:
     movq qword [x], xmm0
     ret
 
+; y = 1 - ((2 * r9 + 1) / h)
+make_y:
+    cvtsi2ss xmm0, r9
+    mov rax, float64(TWO)
+    movq xmm1, rax
+    mulsd xmm0, xmm1
+    mov rax, float64(ONE)
+    movq xmm1, rax
+    addsd xmm0, xmm1
+
+    mov rax, float64(HEIGHT_F)
+    movq xmm1, rax
+    divsd xmm0, xmm1
+    
+    mov rax, float64(ONE)
+    movq xmm1, rax
+    subsd xmm1, xmm0
+    movq qword [y], xmm1
+    ret
+
+get_direction:
+    call get_direction_x
+    movsd xmm4, xmm0
+
+    call get_direction_y
+    movsd xmm5, xmm0
+
+    call get_direction_z
+    movsd xmm2, xmm0
+    movsd xmm1, xmm5
+    movsd xmm0, xmm4
+
+    call normalize
+    ret
+
+

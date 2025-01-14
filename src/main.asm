@@ -106,17 +106,13 @@ loop:
         jmp  loop
     
 done:
-    ; call get_direction_x
-    ; movsd xmm4, xmm0            ; Store X in xmm4
-    ; call get_direction_y
-    ; movsd xmm5, xmm0            ; Store Y in xmm5
-    ; call get_direction_z
-    ; movsd xmm2, xmm0            ; Store Z in xmm2
-    ; movsd xmm1, xmm5            ; Move Y to xmm1
-    ; movsd xmm0, xmm4            ; Move X to xmm0
-    ; call  normalize
     mov rcx, 0
     call make_x
+
+    mov r9, 0
+    call make_y
+
+    call get_direction
 
 .bp:
     mov  rax, 60
